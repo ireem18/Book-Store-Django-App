@@ -1,0 +1,43 @@
+{% extends "homebase.html" %}
+{% load static %}
+{% block content %}
+<section class="d-flex align-items-center justify-content-center">
+    <div class="container mt-5">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6 col-lg-4 align-items-center">
+                <div class="p-0">
+                    <h3 class="mb-4 text-light text-center">CREATE USER</h3>
+                    <form method="post" class="was_validated">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <input name ="username" type="text" class="form-control" placeholder="Username" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <input name ="first_name" type="text" class="form-control" placeholder="First Name" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <input name ="last_name" type="text" class="form-control" placeholder="Last Name" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <input name ="email" type="email" class="form-control" placeholder="E-mail" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <input name ="password1" type="password" class="form-control" placeholder="Password" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <input name ="password2" type="password" class="form-control" placeholder="Confirm Password" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <button type="submit" class="form-control btn btn-success submit px-3 mb-3">SAVE</button>
+                        </div>
+                        <div class="form-group d-md-flex  justify-content-end">
+                            <a class="text-light" href="{% url 'login' %}">Back</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "homebase.html" %}
+{% block content %}
+<div class="container bordered mt-5 bg-light p-4">
+    {% if perms.publisher.add_publisher %}
+        <div class="card text-dark bg-light bg-gradient mb-4">
+            <div class="card-header">
+                <h6>Add Publisher</h6>
+                <a class="position-absolute end-0 top-0 mt-2 ml-5" href="{% url 'publishers' %}"><i class=" text-secondary fas fa-circle-xmark fa-lg"></i></a>
+            </div>
+            <div class="card-body">
+                <form class="was-validated" method="POST" enctype="multipart/form-data" action=" {% if not form.name.value %} {% url 'add_publisher' %} {% endif %}  "">
+                {% csrf_token %}
+                <div class="row">
+                <div class="col col-3">
+                    <input type="text" class="form-control" name="name" placeholder="Please Name"  required
+                           value="{% if form.name.value%} {{form.name.value}} {% endif %}" maxlength="40">
+                    <span class="form-text"> Must be 40 characters long. </span>
+                </div>
+                <div class="col col-3">
+                    <input type="text" class="form-control" name="code" placeholder="Please Code" required
+                           value="{% if form.code.value%} {{form.code.value}} {% endif %}" maxlength="10">
+                    <span class="form-text"> Must be 10 characters long. </span>
+                </div>
+                <div class="col col-3">
+                    {{form.started_date}}
+                </div>
+                <div class="col col-3">
+                    <button class="btn btn-outline-success btn-block" type="submit">Save</button>
+                </div>
+            </div>
+            </form>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if perms.publisher.view_publisher %}
+        <div class="card">
+            <div class="card-header"><h6>Publisher List</h6></div>
+            <div class="card-body">
+                <table class="table table-bordered table-responsive ">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Code</th>
+                    <th>Started Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for publisher in publishers %}
+                    <tr>
+                        <td><span class="badge rounded-pill bg-danger">{{ publisher.name }}</span></td>
+                        <td>{{ publisher.code }}</td>
+                        <td>{{ publisher.started_date|date:'d-m-Y'}}</td>
+                        <td>
+                            {% if perms.publisher.change_publisher %}
+                                <a href="{% url 'edit_publisher' publisher.id %}"><i class="fa fa-edit"></i></a>
+                            {% endif %}
+                            {% if perms.publisher.delete_publisher %}
+                                <a href="{% url 'delete_publisher' publisher.id %}"><i class="fa fa-trash"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+                {% if publishers.has_other_pages %}
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination pagination-sm">
+                            {% if publishers.has_previous %}
+                              <li class="page-item"><a class="page-link" href="?page={{ publishers.previous_page_number }}">&laquo;</a></li>
+                            {% else %}
+                              <li class="page-item disabled"><span class="page-link" >&laquo;</span></li>
+                            {% endif %}
+                            {% for i in publishers.paginator.page_range %}
+                              {% if publishers.number == i %}
+                                <li class="page-item active"><span class="page-link" >{{ i }} <span class="sr-only">(current)</span></span></li>
+                              {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                              {% endif %}
+                            {% endfor %}
+                            {% if publishers.has_next %}
+                              <li class="page-item"><a class="page-link" href="?page={{ publishers.next_page_number }}">&raquo;</a></li>
+                            {% else %}
+                              <li class="page-item disabled"><span class="page-link" >&raquo;</span></li>
+                            {% endif %}
+                      </ul>
+                    </nav>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

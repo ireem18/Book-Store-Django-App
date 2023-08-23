@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <title>Book Store</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
+    <link href="{% static 'fonts/ionicons.css'%}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/all.min.css' %}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    {% block head %} {% endblock %}
+</head>
+<body class="img js-fullheight" style="background-image: url(/static/images/bg_color.jpg);">
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+</body>
+
+{% include 'header.html' %}
+{% block content %} {% endblock %}
+{% block body %} {% endblock %}
+{% include 'footer.html' %}
+{% block footer %} {% endblock %}
+
+</html>
