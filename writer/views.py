@@ -13,7 +13,7 @@ from .models import Writer
 @login_required(login_url="login")
 @permission_required('writer.can_view_writer_list', raise_exception=True)
 def writer_list(request):
-    writers = Writer.objects.filter(active=True)
+    writers = Writer.objects.active()
     form = WriterForm()
     paginator = Paginator(writers, 5)
     page = request.GET.get('page', 1)
@@ -67,7 +67,7 @@ def add_writer(request):
 def edit_writer(request, id):
     try:
         writer = Writer.objects.get(id=id)
-        writers = Writer.objects.filter(active=True)
+        writers = Writer.objects.active()
 
         if request.method == 'POST':
             form = WriterForm(request.POST, request.FILES, instance=writer)
@@ -93,7 +93,7 @@ def edit_writer(request, id):
 def delete_writer(request, id):
     try:
         writer = Writer.objects.get(id=id)
-        writer.deactive()
+        writer.deactive('writer')
         messages.success(request, 'Writer Deleted')
     except Exception as e:
         messages.warning(request, 'Writer Not Deleted')
@@ -104,7 +104,7 @@ def publisher_of_writers(request):
     publisher = request.GET.get('publisher_id')
     writers = writerList = []
     if publisher:
-        writers = Writer.objects.filter(active=True, publisher_id=publisher)
+        writers = Writer.objects.active().filter(publisher_id=publisher)
     for w in writers:
         writerList.append({'id': w.id, 'name': w.name + ' ' + w.surname})
 

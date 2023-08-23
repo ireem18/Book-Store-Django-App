@@ -13,7 +13,7 @@ from .models import Book
 @permission_required('books.can_view_book_list', raise_exception=True)
 def book_list(request):
     try:
-        books = Book.objects.filter(active=True).order_by('-id')
+        books = Book.objects.active()
         form = SearchForm(request.POST)
 
         if request.method == 'POST':

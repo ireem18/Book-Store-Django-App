@@ -11,7 +11,7 @@ from .models import Publisher
 @login_required(login_url="login")
 @permission_required('publisher.view_publisher', raise_exception=True)
 def publisher_list(request):
-    publishers = Publisher.objects.filter(active=True)
+    publishers = Publisher.objects.active()
     form = PublisherForm()
     paginator = Paginator(publishers, 5)
     page = request.GET.get('page', 1)
@@ -60,7 +60,7 @@ def add_publisher(request):
 def edit_publisher(request, id):
     try:
         publisher = Publisher.objects.get(id=id)
-        publishers = Publisher.objects.filter(active=True)
+        publishers = Publisher.objects.active()
 
         if request.method == 'POST':
             form = PublisherForm(request.POST, request.FILES, instance=publisher)
@@ -86,7 +86,7 @@ def edit_publisher(request, id):
 def delete_publisher(request, id):
     try:
         publisher = Publisher.objects.get(id=id)
-        publisher.deactive()
+        publisher.deactive('publisher')
         messages.success(request, 'Publisher Deleted')
     except Exception as e:
         messages.error(request, 'Publisher Not Deleted')

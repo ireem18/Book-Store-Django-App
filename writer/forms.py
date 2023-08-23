@@ -19,7 +19,7 @@ class WriterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['publisher'] = forms.ModelChoiceField(queryset=Publisher.objects.filter(active=True),
+        self.fields['publisher'] = forms.ModelChoiceField(queryset=Publisher.objects.active(),
                                                           required=True, widget=forms.Select(attrs={'class': 'form-control'}))
 
     def clean(self):

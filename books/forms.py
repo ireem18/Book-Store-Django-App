@@ -21,7 +21,7 @@ class BookForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['publisher'] = forms.ModelChoiceField(queryset=Publisher.objects.filter(active=True),
+        self.fields['publisher'] = forms.ModelChoiceField(queryset=Publisher.objects.active(),
                                required=True,
                                widget=forms.Select(
                                attrs={'id': 'publisher_id',
@@ -36,9 +36,10 @@ class BookForm(forms.ModelForm):
 
         if 'publisher' in self.data:
             publisher_id = self.data.get('publisher')
-            self.fields['writer'].queryset = Writer.objects.filter(publisher_id=publisher_id, active=True).order_by('name')
-        elif self.instance.pk:
-            self.fields['writer'].queryset = self.instance.publisher.writer_set.order_by('name')
+            self.fields['writer'].queryset = Writer.objects.active().filter(publisher_id=publisher_id).order_by('name')
+        elif self.instance.publisher:
+            publisher_id = self.instance.publisher.id
+            self.fields['writer'].queryset = Writer.objects.active().filter(publisher_id=publisher_id).order_by('name')
 
 class SearchForm(forms.Form):
     query = forms.CharField(label='Search', max_length=100)
