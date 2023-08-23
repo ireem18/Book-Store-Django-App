@@ -1,12 +1,15 @@
-from django.contrib.auth.decorators import login_required, permission_required
 from django.http import JsonResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from books.models import Book
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.contrib.auth.decorators import login_required, permission_required
+
 from .forms import WriterForm
 from .models import Writer
+
+
 @login_required(login_url="login")
 @permission_required('writer.can_view_writer_list', raise_exception=True)
 def writer_list(request):
@@ -27,6 +30,7 @@ def writer_list(request):
         'form': form
     }
     return render(request, "writer_list.html", content)
+
 
 @permission_required('writer.can_add_writer', raise_exception=True)
 def add_writer(request):
@@ -58,6 +62,7 @@ def add_writer(request):
         print("Writer add error", str(e))
         return redirect('writers')
 
+
 @permission_required('writer.can_edit_writer', raise_exception=True)
 def edit_writer(request, id):
     try:
@@ -83,6 +88,7 @@ def edit_writer(request, id):
     except Writer.DoesNotExist:
         return redirect('writers')
 
+
 @permission_required('writer.can_delete_writer', raise_exception=True)
 def delete_writer(request, id):
     try:
@@ -93,6 +99,7 @@ def delete_writer(request, id):
     except Exception as e:
         messages.warning(request, 'Writer Not Deleted')
     return redirect('writers')
+
 
 def publisher_of_writers(request):
     publisher = request.GET.get('publisher_id')

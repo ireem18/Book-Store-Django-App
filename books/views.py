@@ -1,9 +1,10 @@
-from django.contrib.auth.decorators import login_required, permission_required
-from django.http import HttpResponseRedirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.shortcuts import render, redirect
+
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.contrib.auth.decorators import login_required, permission_required
 
 from .forms import BookForm, SearchForm
 from .models import Book
@@ -39,6 +40,7 @@ def book_list(request):
         print('Book List Error!', str(e))
         return redirect('books')
 
+
 @permission_required('books.can_add_book', raise_exception=True)
 def add_book(request):
     try:
@@ -57,7 +59,7 @@ def add_book(request):
                 data.publisher_date = form.cleaned_data.get('publisher_date')
                 data.save()
                 messages.success(request, 'Add Successfuly')
-                return HttpResponseRedirect('/books')
+                return redirect('books')
             else:
                 messages.success(request, 'Book Form Error:' + str(form.errors))
                 return redirect('books')
@@ -70,6 +72,7 @@ def add_book(request):
     except Exception as e:
         print("Book add error", str(e))
         return redirect('books')
+
 
 @permission_required('books.can_edit_book', raise_exception=True)
 def edit_book(request, id):
@@ -92,6 +95,7 @@ def edit_book(request, id):
 
     except Book.DoesNotExist:
         return redirect('books')
+
 
 @permission_required('books.can_delete_book', raise_exception=True)
 def delete_book(request, id):

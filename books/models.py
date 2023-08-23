@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils import timezone
-from ckeditor_uploader.fields import RichTextUploadingField
+
 from writer.models import Writer
 from publisher.models import Publisher
+
+from ckeditor_uploader.fields import RichTextUploadingField
 
 class Book(models.Model):
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)

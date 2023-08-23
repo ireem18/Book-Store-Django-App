@@ -1,7 +1,7 @@
 from django import forms
 
-from writer.models import Writer
 from .models import Book
+from writer.models import Writer
 from publisher.models import Publisher
 
 from ckeditor.widgets import CKEditorWidget

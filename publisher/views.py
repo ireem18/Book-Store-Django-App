@@ -1,7 +1,9 @@
-from django.contrib.auth.decorators import permission_required, login_required
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.contrib import messages
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.contrib.auth.decorators import permission_required, login_required
 
 from .forms import PublisherForm
 from .models import Publisher
@@ -26,6 +28,7 @@ def publisher_list(request):
         'form': form
     }
     return render(request, "publisher_list.html", content)
+
 
 @permission_required('publisher.add_publisher', raise_exception=True)
 def add_publisher(request):
@@ -52,6 +55,7 @@ def add_publisher(request):
         print("Publisher add error", str(e))
         return redirect('publishers')
 
+
 @permission_required('publisher.change_publisher', raise_exception=True)
 def edit_publisher(request, id):
     try:
@@ -76,6 +80,7 @@ def edit_publisher(request, id):
 
     except Publisher.DoesNotExist:
         return redirect('publishers')
+
 
 @permission_required('publisher.delete_publisher', raise_exception=True)
 def delete_publisher(request, id):
