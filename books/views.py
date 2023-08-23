@@ -101,8 +101,7 @@ def edit_book(request, id):
 def delete_book(request, id):
     try:
         book = Book.objects.get(id=id)
-        book.active = False
-        book.save()
+        book.deactive()
         messages.success(request, 'Book Deleted')
         return redirect('books')
     except Book.DoesNotExist:

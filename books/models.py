@@ -1,12 +1,14 @@
 from django.db import models
 from django.utils import timezone
 
+from user.models import BaseModel
 from writer.models import Writer
 from publisher.models import Publisher
 
 from ckeditor_uploader.fields import RichTextUploadingField
 
-class Book(models.Model):
+
+class Book(BaseModel):
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     writer = models.ForeignKey(Writer, on_delete=models.CASCADE)
     name = models.CharField(max_length=120)
@@ -16,7 +18,6 @@ class Book(models.Model):
     publisher_date = models.DateTimeField(default=timezone.now)
     page_count = models.IntegerField(default=0)
     isbn = models.CharField(max_length=5)
-    active = models.BooleanField(default=True)
 
     class Meta:
         permissions = (("can_view_book_list", "Can view book list"),

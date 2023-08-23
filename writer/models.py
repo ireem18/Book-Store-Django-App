@@ -1,6 +1,8 @@
 from django.db import models
 from publisher.models import Publisher
 
+from user.models import BaseModel
+
 categories = (
     ('social', 'Social'),
     ('historical', 'Historical'),
@@ -11,13 +13,13 @@ categories = (
     ('modern', 'Modern'),
 )
 
-class Writer(models.Model):
+
+class Writer(BaseModel):
     name = models.CharField(max_length=40)
     surname = models.CharField(max_length=40)
     age = models.IntegerField(null=True, blank=True)
     categories = models.CharField(max_length=100, choices=categories)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
-    active = models.BooleanField(default=True)
 
     class Meta:
         permissions = (("can_view_writer_list", "Can view writer list"),

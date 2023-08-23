@@ -86,8 +86,7 @@ def edit_publisher(request, id):
 def delete_publisher(request, id):
     try:
         publisher = Publisher.objects.get(id=id)
-        publisher.active = False
-        publisher.save()
+        publisher.deactive()
         messages.success(request, 'Publisher Deleted')
     except Exception as e:
         messages.error(request, 'Publisher Not Deleted')
