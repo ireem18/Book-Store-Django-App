@@ -1,4 +1,5 @@
 {% extends "homebase.html" %}
+{% load static %}
 {% block content %}
 <div class="section">
     <div class="container">
@@ -28,7 +29,7 @@
                   <th scope="col">Publisher Date</th>
                   <th class="d-flex justify-content-center" scope="col">
                     {% if perms.books.can_add_book %}
-                        <a href="{% url 'add_book' %}">Add</a>
+                       <a class="add-book rounded-pill" type="button" name="button">Add</a>
                     {% endif %}
                 </th>
               </tr>
@@ -48,7 +49,7 @@
                   <td class="d-flex justify-content-center">
                       <div class="p-2">
                             {% if perms.books.can_edit_book %}
-                                <a href="{% url 'edit_book' book.id %}"><i class="fa fa-edit"></i></a>
+                                <a id="edit-book" class="edit-book rounded-pill" data-id="{% url 'edit_book' book.id %}" type="button" name="button"><i class="fas fa-edit"></i></a>
                             {% endif %}
                             {% if perms.books.can_delete_book %}
                                 <a href="{% url 'delete_book' book.id %}"><i class="fa fa-trash"></i></a>
@@ -85,5 +86,22 @@
         {% endif %}
     </div>
 </div>
+<div class="modal fade " role="dialog" id="modal">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".add-book").modalForm({
+            formURL: "{% url 'add_book' %}"
+        });
+        $(".edit-book").modalForm({
+            formURL:document.getElementById('edit-book').getAttribute('data-id')
+        });
+    });
+</script>
 {% endblock %}
 

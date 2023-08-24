@@ -67,6 +67,7 @@ def add_book(request):
             form = BookForm(request.POST)
             context = {
                 'form': form,
+                'formPage': True
             }
         return render(request, 'add_book.html', context)
     except Exception as e:
@@ -89,7 +90,8 @@ def edit_book(request, id):
         else:
             form = BookForm(instance=book)
             context = {
-                'form': form
+                'form': form,
+                'formPage': True
             }
             return render(request, 'edit_book.html', context)
 

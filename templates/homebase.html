@@ -21,9 +21,14 @@
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+    <script type="text/javascript" src="{% static 'static_jquery/js/jquery.js' %}"></script>
+    <script src="{% static 'modal/js/jquery.bootstrap.modal.forms.js' %}"></script>
+    <script src="{% static 'modal/js/jquery.bootstrap.modal.forms.min.js' %}"></script>
 </body>
 
-{% include 'header.html' %}
+{% if formPage != True %}
+    {% include 'header.html' %}
+{% endif %}
 {% block content %} {% endblock %}
 {% block body %} {% endblock %}
 {% include 'footer.html' %}

@@ -37,8 +37,8 @@ class BookForm(forms.ModelForm):
         if 'publisher' in self.data:
             publisher_id = self.data.get('publisher')
             self.fields['writer'].queryset = Writer.objects.active().filter(publisher_id=publisher_id).order_by('name')
-        elif self.instance.publisher:
-            publisher_id = self.instance.publisher.id
+        elif self.instance.pk:
+            publisher_id = self.instance.publisher.id if self.instance.publisher else None
             self.fields['writer'].queryset = Writer.objects.active().filter(publisher_id=publisher_id).order_by('name')
 
 class SearchForm(forms.Form):

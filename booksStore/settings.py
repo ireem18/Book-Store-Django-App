@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'django_static_fontawesome',
-    'django_ajax'
+    'django_ajax',
+    'bootstrap_modal_forms',
+    'django_static_jquery',
 ]
 
 MIDDLEWARE = [
