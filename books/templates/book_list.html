@@ -35,29 +35,32 @@
               </tr>
             </thead>
             <tbody>
-              {% for book in books %}
-              <tr >
-                  <td><span class="badge rounded-pill bg-success">{{ book.publisher.name }}</span></td>
-                  <td><span class="badge rounded-pill bg-danger">{{ book.writer.name }} {{ book.writer.surname }}</span></td>
-                  <td><span class="badge rounded-pill bg-secondary">{{ book.name }}</span></td>
-                  <td>{{ book.isbn }}</td>
-                  <td>{{ book.page_count }}</td>
-                  <td>{{ book.count }}</td>
-                  <td>{{ book.subject }}</td>
-                  <td>{{ book.description | safe | slice:":255" }}</td>
-                  <td>{{book.publisher_date|date:'d-m-Y'}}</td>
-                  <td class="d-flex justify-content-center">
-                      <div class="p-2">
-                            {% if perms.books.can_edit_book %}
-                                <a id="edit-book" class="edit-book rounded-pill" data-id="{% url 'edit_book' book.id %}" type="button" name="button"><i class="fas fa-edit"></i></a>
-                            {% endif %}
-                            {% if perms.books.can_delete_book %}
-                                <a href="{% url 'delete_book' book.id %}"><i class="fa fa-trash"></i></a>
-                            {% endif %}
-                        </div>
-                  </td>
-              </tr>
-              {% endfor %}
+            {% for book in books %}
+                <tr >
+                    <td><span class="badge rounded-pill bg-success">{{ book.publisher.name }}</span></td>
+                    <td><span class="badge rounded-pill bg-danger">{{ book.writer.name }} {{ book.writer.surname }}</span></td>
+                    <td><span class="badge rounded-pill bg-secondary">{{ book.name }}</span></td>
+                    <td>{{ book.isbn }}</td>
+                    <td>{{ book.page_count }}</td>
+                    <td>{{ book.count }}</td>
+                    <td>{{ book.subject }}</td>
+                    <td>{{ book.description | safe | slice:":255" }}</td>
+                    <td>{{book.publisher_date|date:'d-m-Y'}}</td>
+                    <td class="d-flex justify-content-center">
+                    {% if perms.books.can_edit_book %}
+                        <button type="button" class="update-book btn btn-sm " data-form-url="{% url 'edit_book' book.pk %}">
+                          <span class="fa fa-edit"></span>
+                        </button>
+                    {% endif %}
+                    {% if perms.books.can_delete_book %}
+                        <button type="button" class="btn btn-sm " onclick="location.href='{% url 'delete_book' book.pk %}'">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    {% endif %}
+
+                    </td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
 
@@ -86,22 +89,42 @@
         {% endif %}
     </div>
 </div>
-<div class="modal fade " role="dialog" id="modal">
-  <div class="modal-dialog modal-xl" role="document">
+<div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
     </div>
   </div>
 </div>
 
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
 <script type="text/javascript">
-    $(document).ready(function() {
+    function createBookSyncModalForm() {
         $(".add-book").modalForm({
-            formURL: "{% url 'add_book' %}"
+            formURL: "{% url 'add_book' %}",
+            modalID: "#add-modal"
         });
-        $(".edit-book").modalForm({
-            formURL:document.getElementById('edit-book').getAttribute('data-id')
+    }
+
+    function updateBookModalForm() {
+        $(".update-book").each(function () {
+              $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                asyncUpdate: true,
+                asyncSettings: {
+                  closeOnSubmit: false,
+                  dataUrl: "books/",
+                  dataKey: "table",
+                }
+              });
         });
-    });
+    }
+    createBookSyncModalForm();
+    updateBookModalForm();
 </script>
 {% endblock %}
 
