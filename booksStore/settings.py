@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_ajax',
     'bootstrap_modal_forms',
     'django_static_jquery',
+    'jquery',
 ]
 
 MIDDLEWARE = [

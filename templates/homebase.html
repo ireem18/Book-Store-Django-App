@@ -12,18 +12,14 @@
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
     <link href="{% static 'fonts/ionicons.css'%}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'fontawesome/css/all.min.css' %}" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"> </script>
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     {% block head %} {% endblock %}
 </head>
 <body class="img js-fullheight" style="background-image: url(/static/images/bg_color.jpg);">
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
     <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
-    <script type="text/javascript" src="{% static 'static_jquery/js/jquery.js' %}"></script>
-    <script src="{% static 'modal/js/jquery.bootstrap.modal.forms.js' %}"></script>
-    <script src="{% static 'modal/js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+    <script type="text/javascript"  src="{% static 'bootstrap/js/custom.js' %}"></script>
 </body>
 
 {% if formPage != True %}

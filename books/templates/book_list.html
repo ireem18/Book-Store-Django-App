@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="table-responsive container mt-3 bg-light p-4">
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="book-table">
             <thead>
                 <tr>
                   <th scope="col">Publisher</th>
@@ -29,7 +29,7 @@
                   <th scope="col">Publisher Date</th>
                   <th class="d-flex justify-content-center" scope="col">
                     {% if perms.books.can_add_book %}
-                       <a class="add-book rounded-pill" type="button" name="button">Add</a>
+                       <a class="add-book rounded-pill" type="button" name="button" data-form-url="{% url 'add_book' %}">Add</a>
                     {% endif %}
                 </th>
               </tr>
@@ -48,7 +48,7 @@
                     <td>{{book.publisher_date|date:'d-m-Y'}}</td>
                     <td class="d-flex justify-content-center">
                     {% if perms.books.can_edit_book %}
-                        <button type="button" class="update-book btn btn-sm " data-form-url="{% url 'edit_book' book.pk %}">
+                        <button type="button" class="edit-book btn btn-sm" data-form-url="{% url 'edit_book' book.pk %}">
                           <span class="fa fa-edit"></span>
                         </button>
                     {% endif %}
@@ -89,42 +89,13 @@
         {% endif %}
     </div>
 </div>
-<div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal" id="modal-book" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
     </div>
   </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="modal">
-  <div class="modal-dialog modal-xl" role="document">
-    <div class="modal-content"></div>
-  </div>
-</div>
-
-<script type="text/javascript">
-    function createBookSyncModalForm() {
-        $(".add-book").modalForm({
-            formURL: "{% url 'add_book' %}",
-            modalID: "#add-modal"
-        });
-    }
-
-    function updateBookModalForm() {
-        $(".update-book").each(function () {
-              $(this).modalForm({
-                formURL: $(this).data("form-url"),
-                asyncUpdate: true,
-                asyncSettings: {
-                  closeOnSubmit: false,
-                  dataUrl: "books/",
-                  dataKey: "table",
-                }
-              });
-        });
-    }
-    createBookSyncModalForm();
-    updateBookModalForm();
-</script>
 {% endblock %}
+
 

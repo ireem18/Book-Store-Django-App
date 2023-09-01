@@ -1,10 +1,12 @@
 from django.contrib import messages
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.template.loader import render_to_string
 
 from .forms import BookForm, SearchForm
 from .models import Book
@@ -64,12 +66,13 @@ def add_book(request):
                 messages.success(request, 'Book Form Error:' + str(form.errors))
                 return redirect('books')
         else:
-            form = BookForm(request.POST)
-            context = {
-                'form': form,
-                'formPage': True
-            }
-        return render(request, 'add_book.html', context)
+            form = BookForm()
+            context = {'form': form, 'formPage': True}
+            html_form = render_to_string('add_book.html',
+                                         context,
+                                         request=request,
+                                         )
+            return JsonResponse({'html_form': html_form})
     except Exception as e:
         print("Book add error", str(e))
         return redirect('books')
@@ -89,12 +92,12 @@ def edit_book(request, id):
             return redirect('books')
         else:
             form = BookForm(instance=book)
-            context = {
-                'form': form,
-                'formPage': True
-            }
-            return render(request, 'edit_book.html', context)
-
+            context = {'form': form, 'formPage': True}
+            html_form = render_to_string('edit_book.html',
+                                         context,
+                                         request=request,
+                                         )
+            return JsonResponse({'html_form': html_form})
     except Book.DoesNotExist:
         return redirect('books')
 
