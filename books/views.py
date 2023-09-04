@@ -106,9 +106,14 @@ def edit_book(request, id):
 def delete_book(request, id):
     try:
         book = Book.objects.get(id=id)
-        book.deactive()
-        messages.success(request, 'Book Deleted')
-        return redirect('books')
+        if request.method == 'POST':
+            book.deactive()
+            messages.success(request, 'Book Deleted')
+            return redirect('books')
+        else:
+            context = {'book': book, 'formPage': True}
+            html_form = render_to_string('delete_book.html', context, request=request)
+            return JsonResponse({'html_form': html_form})
     except Book.DoesNotExist:
         return redirect('books')
 

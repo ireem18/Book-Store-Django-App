@@ -25,4 +25,6 @@ $(function () {
     $(".add-book").click(loadForm);
     // Update book
     $("#book-table").on("click", ".edit-book", loadForm);
+    // Delete book
+    $("#book-table").on("click", ".delete-book", loadForm);
 });

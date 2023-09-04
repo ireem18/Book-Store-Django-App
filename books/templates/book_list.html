@@ -53,7 +53,7 @@
                         </button>
                     {% endif %}
                     {% if perms.books.can_delete_book %}
-                        <button type="button" class="btn btn-sm " onclick="location.href='{% url 'delete_book' book.pk %}'">
+                        <button type="button" class="delete-book btn btn-sm " data-form-url="{% url 'delete_book' book.pk %}">
                             <i class="fas fa-trash"></i>
                         </button>
                     {% endif %}
