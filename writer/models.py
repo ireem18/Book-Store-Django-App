@@ -1,7 +1,7 @@
 from django.db import models
 from publisher.models import Publisher
 
-from user.models import BaseModel
+from base.models import BaseModel
 
 categories = (
     ('social', 'Social'),

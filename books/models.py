@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from user.models import BaseModel
+from base.models import BaseModel
 from writer.models import Writer
 from publisher.models import Publisher
 
