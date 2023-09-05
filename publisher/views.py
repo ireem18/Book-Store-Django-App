@@ -36,11 +36,7 @@ def add_publisher(request):
         if request.method == 'POST':
             form = PublisherForm(request.POST)
             if form.is_valid():
-                data = Publisher()
-                data.name = form.cleaned_data.get('name')
-                data.code = form.cleaned_data.get('code')
-                data.started_date = form.cleaned_data.get('started_date')
-                data.save()
+                form.save()
                 messages.success(request, 'Add Successfuly')
             else:
                 messages.success(request, 'Publisher Form Error:' + str(form.errors))

@@ -49,22 +49,11 @@ def add_book(request):
         if request.method == 'POST':
             form = BookForm(request.POST)
             if form.is_valid():
-                data = Book()
-                data.publisher = form.cleaned_data.get('publisher')
-                data.writer = form.cleaned_data.get('writer')
-                data.name = form.cleaned_data.get('name')
-                data.subject = form.cleaned_data.get('subject')
-                data.description = form.cleaned_data.get('description')
-                data.isbn = form.cleaned_data.get('isbn')
-                data.page_count = int(form.cleaned_data.get('page_count'))
-                data.count = int(form.cleaned_data.get('count'))
-                data.publisher_date = form.cleaned_data.get('publisher_date')
-                data.save()
+                form.save()
                 messages.success(request, 'Add Successfuly')
-                return redirect('books')
             else:
                 messages.success(request, 'Book Form Error:' + str(form.errors))
-                return redirect('books')
+            return redirect('books')
         else:
             form = BookForm()
             context = {'form': form, 'formPage': True}

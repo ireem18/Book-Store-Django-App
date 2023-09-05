@@ -38,16 +38,8 @@ def add_writer(request):
         if request.method == 'POST':
             form = WriterForm(request.POST)
             if form.is_valid():
-                data = Writer()
-                age = form.cleaned_data.get('age')
-                data.name = form.cleaned_data.get('name')
-                data.surname = form.cleaned_data.get('surname')
-                data.publisher = form.cleaned_data.get('publisher')
-                data.categories = form.cleaned_data.get('categories')
-                data.age = age
-                data.save()
+                form.save()
                 messages.success(request, 'Add Successfuly')
-
             else:
                 messages.warning(request, form.errors)
             return redirect('writers')
@@ -106,6 +98,6 @@ def publisher_of_writers(request):
     if publisher:
         writers = Writer.objects.active().filter(publisher_id=publisher)
     for w in writers:
-        writerList.append({'id': w.id, 'name': w.name + ' ' + w.surname})
+        writerList.append({'id': w.id, 'name': w.__str__()})
 
     return JsonResponse(writerList, safe=False)

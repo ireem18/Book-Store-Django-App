@@ -27,3 +27,15 @@ class WriterForm(forms.ModelForm):
         age = clean_data.get('age')
         if age < 18:
             raise forms.ValidationError('This writer age should be greatter 18!')
+
+    def save(self, commit=True):
+        instance = super(WriterForm, self).save(commit=False)
+        clean_data = super().clean()
+        instance.age = clean_data.get('age')
+        instance.name = clean_data.get('name')
+        instance.surname = clean_data.get('surname')
+        instance.publisher = clean_data.get('publisher')
+        instance.categories = clean_data.get('categories')
+        if commit:
+            instance.save()
+        return instance

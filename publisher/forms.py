@@ -14,3 +14,13 @@ class PublisherForm(forms.ModelForm):
             'code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Code', 'max_length': 10}),
             'started_date': DateInput(attrs={'class': 'form-control', 'placeholder': 'Started Date'})
         }
+
+    def save(self, commit=True):
+        instance = super(PublisherForm, self).save(commit=False)
+        clean_data = super().clean()
+        instance.name = clean_data.get('name')
+        instance.code = clean_data.get('code')
+        instance.started_date = clean_data.get('started_date')
+        if commit:
+            instance.save()
+        return instance
