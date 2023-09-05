@@ -7,8 +7,10 @@ from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
 
 from .forms import PasswordChangeForm, RegisterForm
+from .decorators import authentication_not_required
 
 
+@authentication_not_required
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -29,21 +31,13 @@ def logout_view(request):
     return redirect('login')
 
 
+@authentication_not_required
 def forgot_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.POST)
-        error = False
         if form.is_valid():
-            new_password1 = form.cleaned_data.get('new_password1')
-            new_password2 = form.cleaned_data.get('new_password2')
             user = User.objects.get(username=form.cleaned_data.get('username'))
-            if not user:
-                messages.info(request, "User not find!..." + str(form.errors))
-                error = True
-            if not new_password1 == new_password2:
-                messages.info(request, "Passwords not same!..." + str(form.errors))
-                error = True
-            if not error:
+            if user:
                 user.set_password(form.cleaned_data.get('new_password1'))
                 user.save()
                 messages.success(request, "Password updated!")
@@ -58,20 +52,18 @@ def forgot_password(request):
         return render(request, 'forgot_password.html', {'form': form})
 
 
+@authentication_not_required
 def create_user(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
-        error = False
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=password)
-            login(request, user)
+            instance = form.save(commit=False)
+            instance.set_password(form.cleaned_data.get('password1'))
+            instance.save()
             return redirect('login')
         else:
             messages.info(request, "Please again..." + str(form.errors))
             return HttpResponseRedirect('create_user')
     else:
-        form = PasswordChangeForm(request.user)
+        form = PasswordChangeForm()
         return render(request, 'create_user.html', {'form': form})
