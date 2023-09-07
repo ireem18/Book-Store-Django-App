@@ -32,6 +32,7 @@ def writer_list(request):
     return render(request, "writer_list.html", content)
 
 
+@login_required(login_url="login")
 @permission_required('writer.can_add_writer', raise_exception=True)
 def add_writer(request):
     try:
@@ -56,6 +57,7 @@ def add_writer(request):
         return redirect('writers')
 
 
+@login_required(login_url="login")
 @permission_required('writer.can_edit_writer', raise_exception=True)
 def edit_writer(request, id):
     try:
@@ -82,6 +84,7 @@ def edit_writer(request, id):
         return redirect('writers')
 
 
+@login_required(login_url="login")
 @permission_required('writer.can_delete_writer', raise_exception=True)
 def delete_writer(request, id):
     try:

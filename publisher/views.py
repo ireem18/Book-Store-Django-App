@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import permission_required, login_required
 from .forms import PublisherForm
 from .models import Publisher
 
+
 @login_required(login_url="login")
 @permission_required('publisher.view_publisher', raise_exception=True)
 def publisher_list(request):
@@ -30,6 +31,7 @@ def publisher_list(request):
     return render(request, "publisher_list.html", content)
 
 
+@login_required(login_url="login")
 @permission_required('publisher.add_publisher', raise_exception=True)
 def add_publisher(request):
     try:
@@ -51,6 +53,7 @@ def add_publisher(request):
         return redirect('publishers')
 
 
+@login_required(login_url="login")
 @permission_required('publisher.change_publisher', raise_exception=True)
 def edit_publisher(request, id):
     try:
@@ -68,12 +71,13 @@ def edit_publisher(request, id):
 
         else:
             form = PublisherForm(instance=publisher)
-            return render(request, 'publisher_list.html', {'form': form })
+            return render(request, 'publisher_list.html', {'form': form, 'publishers': publishers})
 
     except Publisher.DoesNotExist:
         return redirect('publishers')
 
 
+@login_required(login_url="login")
 @permission_required('publisher.delete_publisher', raise_exception=True)
 def delete_publisher(request, id):
     try:
