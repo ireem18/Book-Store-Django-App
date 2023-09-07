@@ -33,13 +33,14 @@
                         <span class="form-text">{{ form.surname.help_text|safe }}</span><br/>
                         {% for error in form.surname.errors %}
                             <span class="text-danger ml-2">{{ error|safe }}</span><br>
-                        {% endfor %}                    </div>
+                        {% endfor %}
+                    </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col col-4">
                         <input type="number" class="form-control" name="age" value="{{form.age.value}}" placeholder="Please Age">
                         <span class="form-text">{{ form.age.help_text|safe }}</span>
-                        {% for error in form.errors %}
+                        {% for error in form.age.errors %}
                             <span class="text-danger ml-2">{{ error|safe }}</span><br>
                         {% endfor %}
                     </div>

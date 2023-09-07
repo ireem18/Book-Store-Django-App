@@ -8,21 +8,29 @@
                 <a class="position-absolute end-0 top-0 mt-2 ml-5" href="{% url 'publishers' %}"><i class=" text-secondary fas fa-circle-xmark fa-lg"></i></a>
             </div>
             <div class="card-body">
-                <form class="was-validated" method="POST" enctype="multipart/form-data" action=" {% if not form.name.value %} {% url 'add_publisher' %} {% endif %}  "">
+                <form method="POST" enctype="multipart/form-data"
+                      action=" {% if not form.name.value %} {% url 'add_publisher' %} {% endif %}" novalidate>
                 {% csrf_token %}
                 <div class="row">
                 <div class="col col-3">
-                    <input type="text" class="form-control" name="name" placeholder="Please Name"  required
+                    <input type="text" class="form-control" name="name" placeholder="Please Name"
                            value="{% if form.name.value%} {{form.name.value}} {% endif %}" maxlength="40">
-                    <span class="form-text"> Must be 40 characters long. </span>
+                    <span class="form-text">{{ form.name.help_text|safe }}</span><br>
+                    {% for error in form.name.errors %}
+                        <span class="text-danger ml-2">{{ error|safe }}</span><br>
+                    {% endfor %}
                 </div>
                 <div class="col col-3">
-                    <input type="text" class="form-control" name="code" placeholder="Please Code" required
+                    <input type="text" class="form-control" name="code" placeholder="Please Code"
                            value="{% if form.code.value%} {{form.code.value}} {% endif %}" maxlength="10">
-                    <span class="form-text"> Must be 10 characters long. </span>
+                    <span class="form-text">{{ form.code.help_text|safe }}</span><br>
+                    {% for error in form.code.errors %}
+                        <span class="text-danger ml-2">{{ error|safe }}</span><br>
+                    {% endfor %}
                 </div>
                 <div class="col col-3">
                     {{form.started_date}}
+                    <span class="form-text">{{ form.started_date.help_text|safe }}</span>
                 </div>
                 <div class="col col-3">
                     <button class="btn btn-outline-success btn-block" type="submit">Save</button>

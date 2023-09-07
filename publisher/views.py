@@ -34,19 +34,18 @@ def publisher_list(request):
 def add_publisher(request):
     try:
         if request.method == 'POST':
+            publishers = Publisher.objects.active()
             form = PublisherForm(request.POST)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Add Successfuly')
+                return redirect('publishers')
             else:
-                messages.success(request, 'Publisher Form Error:' + str(form.errors))
-            return redirect('publishers')
+                return render(request, 'publisher_list.html', {'form': form, 'publishers': publishers})
         else:
             form = PublisherForm()
-            context = {
-                'form': form
-            }
-        return render(request, 'publisher_list.html', context)
+        return render(request, 'publisher_list.html', {'form': form})
+
     except Exception as e:
         print("Publisher add error", str(e))
         return redirect('publishers')
@@ -63,16 +62,13 @@ def edit_publisher(request, id):
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Publisher Updated Successfuly')
+                return redirect('publishers')
             else:
-                messages.success(request, 'Publisher Form Error:' + str(form.errors))
-            return redirect('publishers')
+                return render(request, 'publisher_list.html', {'form': form, 'publishers': publishers})
+
         else:
             form = PublisherForm(instance=publisher)
-            context = {
-                'form': form,
-                'publishers': publishers
-            }
-            return render(request, 'publisher_list.html', context)
+            return render(request, 'publisher_list.html', {'form': form })
 
     except Publisher.DoesNotExist:
         return redirect('publishers')
