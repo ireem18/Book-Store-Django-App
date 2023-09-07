@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 
+import re
+
 
 class PasswordChangeForm(forms.Form):
     username = forms.CharField(label='Username', max_length=100)
@@ -18,7 +20,7 @@ class PasswordChangeForm(forms.Form):
         except Exception as e:
             raise forms.ValidationError("User not find!")
 
-        if new_password1 != new_password2:
+        if not re.match(new_password1, new_password2):
             raise forms.ValidationError("Passwords don't match")
 
 
@@ -35,5 +37,5 @@ class RegisterForm(forms.ModelForm):
         clean_data = super().clean()
         password1 = clean_data.get('password1')
         password2 = clean_data.get('password2')
-        if password1 != password2:
+        if not re.match(password1, password2):
             raise forms.ValidationError("Passwords don't match")
