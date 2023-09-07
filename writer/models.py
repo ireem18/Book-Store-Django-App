@@ -19,7 +19,7 @@ class Writer(BaseModel):
     surname = models.CharField(max_length=40)
     age = models.IntegerField(null=True, blank=True)
     categories = models.CharField(max_length=100, choices=categories)
-    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
+    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, related_name='writers')
 
     class Meta:
         permissions = (("can_view_writer_list", "Can view writer list"),
@@ -29,3 +29,9 @@ class Writer(BaseModel):
 
     def __str__(self):
         return self.name + ' ' + self.surname
+
+    def deactive(self, obj):
+        super().deactive(obj)
+        books = obj.books.filter(active=True)
+        for book in books:
+            super().deactive(book)

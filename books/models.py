@@ -9,8 +9,8 @@ from ckeditor_uploader.fields import RichTextUploadingField
 
 
 class Book(BaseModel):
-    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
-    writer = models.ForeignKey(Writer, on_delete=models.CASCADE)
+    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, related_name='books')
+    writer = models.ForeignKey(Writer, on_delete=models.CASCADE, related_name='books')
     name = models.CharField(max_length=120)
     subject = models.CharField(max_length=120)
     description = RichTextUploadingField()

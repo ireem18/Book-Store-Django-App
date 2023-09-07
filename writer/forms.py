@@ -16,6 +16,9 @@ class WriterForm(forms.ModelForm):
             'age': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Age', 'type': 'number'}),
             'categories': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Choise One...'}, choices=categories)
         }
+        help_texts = {
+            'publisher': 'Group to which this message belongs to',
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
