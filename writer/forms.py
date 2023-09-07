@@ -11,23 +11,35 @@ class WriterForm(forms.ModelForm):
         model = Writer
         fields = ['publisher', 'name', 'surname', 'age', 'categories']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name', 'max_length': 40}),
-            'surname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Surname', 'max_length': 40}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name', 'max_length': 40, 'required': True}),
+            'surname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Surname', 'max_length': 40,
+                                              'required': True}),
             'age': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Age', 'type': 'number'}),
-            'categories': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Choise One...'}, choices=categories)
+            'categories': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Choise One...',
+                                              'required': True}, choices=categories)
         }
         help_texts = {
-            'publisher': 'Group to which this message belongs to',
+            'name': 'Please enter name',
+            'surname': 'Please enter surname',
+            'categories': 'Please choice categories',
+            'age': 'Please enter age',
+        }
+        error_messages = {
+            "name": {"max_length": "This writer's name is too long.", "required": "This field is required!"},
+            "surname": {"max_length": "This writer's surname is too long.", "required": "This field is required!"},
+            "categories": {"required": "This field is required!"}
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['publisher'] = forms.ModelChoiceField(queryset=Publisher.objects.active(),
-                                                          required=True, widget=forms.Select(attrs={'class': 'form-control'}))
+                                                          required=True, widget=forms.Select(attrs={'class': 'form-control'}),
+                                                          help_text='Please choice publisher',
+                                                          error_messages={"required": "This field is required!"})
 
     def clean(self):
         clean_data = super().clean()
-        age = clean_data.get('age')
+        age = clean_data.get('age') or 0
         if age < 18:
             raise forms.ValidationError('This writer age should be greatter 18!')
 

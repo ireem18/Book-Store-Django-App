@@ -37,12 +37,13 @@ def add_writer(request):
     try:
         if request.method == 'POST':
             form = WriterForm(request.POST)
+            writers = Writer.objects.active()
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Add Successfuly')
+                return redirect('writers')
             else:
-                messages.warning(request, form.errors)
-            return redirect('writers')
+                return render(request, 'writer_list.html', {'form': form, 'writers': writers })
         else:
             form = WriterForm()
             context = {
@@ -66,9 +67,9 @@ def edit_writer(request, id):
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Writer Updated Successfuly')
+                return redirect('writers')
             else:
-                messages.success(request, 'Writer Form Error:' + str(form.errors))
-            return redirect('writers')
+                return render(request, 'writer_list.html', {'form': form, 'writers': writers })
         else:
             form = WriterForm(instance=writer)
             context = {
