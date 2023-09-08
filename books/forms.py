@@ -15,21 +15,41 @@ class BookForm(forms.ModelForm):
         model = Book
         fields = ['publisher', 'writer', 'name', 'subject', 'description', 'count', 'page_count', 'publisher_date', 'isbn']
         widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name', 'max_length': 120, 'required': True}),
+            'subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Subject', 'max_length': 120, 'required': True}),
+            'isbn': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'ISBN', 'required': True}),
+            'count': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Count'}),
+            'page_count': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Page Count'}),
             'description': CKEditorWidget(),
-            'publisher_date': DateInput(attrs={'class': 'form-control', 'placeholder': 'Publisher Date'})
+            'publisher_date': DateInput(attrs={'class': 'form-control', 'placeholder': 'Publisher Date', 'required': True})
+        }
+        help_texts = {
+            'name': 'Please enter name',
+            'subject': 'Please enter subject',
+            'description': 'Please enter description',
+            'publisher_date': 'Please enter publisher date',
+            'isbn': 'Please enter isbn',
+            'count': 'Please enter count',
+            'page_count': 'Please enter page count',
+        }
+        error_messages = {
+            "name": {"max_length": "This writer's name is too long."},
+            "subject": {"max_length": "This writer's subject is too long."},
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['publisher'] = forms.ModelChoiceField(queryset=Publisher.objects.active(),
-                               required=True,
+                               required=True, help_text='Please choice publisher',
+                               error_messages={"required": "This field is required!"},
                                widget=forms.Select(
                                attrs={'id': 'publisher_id',
                                       'class': 'form-control',
                                       'onchange': 'get_writers();'}))
 
         self.fields['writer'] = forms.ModelChoiceField(queryset=Writer.objects.none(),
-                               required=True,
+                               required=True, help_text='Please choice writer',
+                               error_messages={"required": "This field is required!"},
                                widget=forms.Select(
                                attrs={'id': 'writer_id',
                                       'class': 'form-control'}))

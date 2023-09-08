@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -43,54 +43,38 @@ def book_list(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-@login_required(login_url="login")
-@permission_required('books.can_add_book', raise_exception=True)
+def save_book_form(request, form, template_name):
+    data = dict()
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+            books = Book.objects.active()
+            data['html_book_list'] = render_to_string('include_book_list.html', {
+                'books': books
+            })
+        else:
+            data['form_is_valid'] = False
+    context = {'form': form, 'formPage': True}
+    data['html_form'] = render_to_string(template_name, context, request=request)
+    return JsonResponse(data)
+
+
 def add_book(request):
-    try:
-        if request.method == 'POST':
-            form = BookForm(request.POST)
-            if form.is_valid():
-                form.save()
-                messages.success(request, 'Add Successfuly')
-            else:
-                messages.success(request, 'Book Form Error:' + str(form.errors))
-            return redirect('books')
-        else:
-            form = BookForm()
-            context = {'form': form, 'formPage': True}
-            html_form = render_to_string('add_book.html',
-                                         context,
-                                         request=request,
-                                         )
-            return JsonResponse({'html_form': html_form})
-    except Exception as e:
-        print("Book add error", str(e))
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+    else:
+        form = BookForm()
+    return save_book_form(request, form, 'book_create.html')
 
 
-@login_required(login_url="login")
-@permission_required('books.can_edit_book', raise_exception=True)
 def edit_book(request, id):
-    try:
-        book = Book.objects.get(id=id)
-        if request.method == 'POST':
-            form = BookForm(request.POST, request.FILES, instance=book)
-            if form.is_valid():
-                form.save()
-                messages.success(request, 'Book Updated Successfuly')
-            else:
-                messages.success(request, 'Book Form Error:'+str(form.errors))
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        else:
-            form = BookForm(instance=book)
-            context = {'form': form, 'formPage': True}
-            html_form = render_to_string('edit_book.html',
-                                         context,
-                                         request=request,
-                                         )
-            return JsonResponse({'html_form': html_form})
-    except Book.DoesNotExist:
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    book = get_object_or_404(Book, pk=id)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+    else:
+        form = BookForm(instance=book)
+    return save_book_form(request, form, 'book_update.html')
 
 
 @login_required(login_url="login")
@@ -101,10 +85,10 @@ def delete_book(request, id):
         if request.method == 'POST':
             book.deactive(book)
             messages.success(request, 'Book Deleted')
-            return redirect('books')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
             context = {'book': book, 'formPage': True}
-            html_form = render_to_string('delete_book.html', context, request=request)
+            html_form = render_to_string('book_delete.html', context, request=request)
             return JsonResponse({'html_form': html_form})
     except Book.DoesNotExist:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

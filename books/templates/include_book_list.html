@@ -1,0 +1,27 @@
+{% for book in books %}
+    <tr >
+        <td><span class="badge rounded-pill bg-success">{{ book.publisher.name }}</span></td>
+        <td><span class="badge rounded-pill bg-danger">{{ book.writer.name }} {{ book.writer.surname }}</span></td>
+        <td><span class="badge rounded-pill bg-secondary">{{ book.name }}</span></td>
+        <td>{{ book.isbn }}</td>
+        <td>{{ book.page_count }}</td>
+        <td>{{ book.count }}</td>
+        <td>{{ book.subject }}</td>
+        <td>{{ book.description | safe | slice:":255" }}</td>
+        <td>{{book.publisher_date|date:'d-m-Y'}}</td>
+        <td class="d-flex justify-content-center">
+        {% if perms.books.can_edit_book %}
+            <button type="button" class="edit-book btn btn-sm" data-form-url="{% url 'edit_book' book.pk %}">
+              <span class="fa fa-edit"></span>
+            </button>
+        {% endif %}
+        {% if perms.books.can_delete_book %}
+            <button type="button" class="delete-book btn btn-sm " data-form-url="{% url 'delete_book' book.pk %}">
+                <i class="fas fa-trash"></i>
+            </button>
+        {% endif %}
+
+        </td>
+    </tr>
+
+{% endfor %}
