@@ -10,7 +10,6 @@ from .forms import PasswordChangeForm, RegisterForm
 from .decorators import authentication_not_required
 
 
-@authentication_not_required
 def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
