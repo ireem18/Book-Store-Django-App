@@ -18,4 +18,3 @@ class BaseModel(models.Model):
     def deactive(self, obj):
         obj.active = False
         obj.save()
-        return super(BaseModel, self).deactive(obj)
