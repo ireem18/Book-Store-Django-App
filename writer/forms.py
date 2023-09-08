@@ -36,11 +36,11 @@ class WriterForm(forms.ModelForm):
                                                           help_text='Please choice publisher',
                                                           error_messages={"required": "This field is required!"})
 
-    def clean(self):
-        clean_data = super().clean()
-        age = clean_data.get('age') or 0
+    def clean_age(self):
+        age = self.cleaned_data.get('age')
         if age < 18:
             raise forms.ValidationError('This writer age should be greatter 18!')
+        return age
 
     def save(self, commit=True):
         instance = super(WriterForm, self).save(commit=False)
