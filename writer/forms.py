@@ -25,9 +25,8 @@ class WriterForm(forms.ModelForm):
             'age': 'Please enter age',
         }
         error_messages = {
-            "name": {"max_length": "This writer's name is too long.", "required": "This field is required!"},
-            "surname": {"max_length": "This writer's surname is too long.", "required": "This field is required!"},
-            "categories": {"required": "This field is required!"}
+            "name": {"max_length": "This writer's name is too long."},
+            "surname": {"max_length": "This writer's surname is too long."}
         }
 
     def __init__(self, *args, **kwargs):

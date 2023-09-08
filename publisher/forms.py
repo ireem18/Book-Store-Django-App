@@ -17,11 +17,11 @@ class PublisherForm(forms.ModelForm):
         help_texts = {
             'name': 'Please enter name',
             'code': 'Please enter code',
-            'started_date': 'Please enter started_date'
+            'started_date': 'Please enter start date'
         }
         error_messages = {
-            "name": {"max_length": "This writer's name is too long.", "required": "This field is required!"},
-            "code": {"max_length": "This writer's code is too long.", "required": "This field is required!"}
+            "name": {"max_length": "This writer's name is too long."},
+            "code": {"max_length": "This writer's code is too long."}
         }
 
     def save(self, commit=True):
