@@ -17,7 +17,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('books')
+            return redirect('chart_board')
         else:
             messages.warning(request, "Login Error! Username or password wrong!")
             return redirect('login')

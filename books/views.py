@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
+from django.db.models import CharField, Value, Count
+from django.db.models.functions import Concat
 from django.shortcuts import render, redirect, get_object_or_404
 
 from django.db.models import Q
@@ -8,8 +10,20 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required, permission_required
 from django.template.loader import render_to_string
 
+from writer.models import Writer
 from .forms import BookForm, SearchForm
 from .models import Book
+
+@login_required(login_url="login")
+@permission_required('books.can_view_book_list', raise_exception=True)
+def chart_board(request):
+    writer_info = Book.objects.active().values('writer').annotate(full_name=Concat("writer__name", Value(" "), "writer__surname",
+                                                                output_field=CharField()), total=Count('writer')).values('full_name', 'total')
+    publisher_info = Writer.objects.active().values('publisher').annotate(total=Count('publisher')).values('publisher__name', 'total')
+    book_info = Book.objects.active().values('name', 'count')
+    context = {'writerInfo': writer_info, 'publisherInfo': publisher_info, 'bookInfo': book_info}
+    return render(request, "chart_board.html", context)
+
 
 
 @login_required(login_url="login")

@@ -1,0 +1,115 @@
+{% extends "homebase.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row display-flex justify-content-center">
+        <div class="col col-6">
+            <div class="card mt-4">
+                <div class="card-title">
+                    <p class="text-success">Number of Books by Writers</p>
+                </div>
+                <div class="card-body">
+                    <canvas id="writerChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col col-6">
+            <div class="card mt-4">
+                <div class="card-title">
+                    <p class="text-success">Number of Writer by Publishers</p>
+                </div>
+                <div class="card-body">
+                    <canvas id="publisherChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row display-flex justify-content-center">
+        <div class="col col-12">
+            <div class="card mt-4">
+                <div class="card-title">
+                    <p class="text-success">Book Stock Counts</p>
+                </div>
+                <div class="card-body">
+                    <canvas id="bookChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    var ctx = document.getElementById('publisherChart').getContext('2d');
+
+    var barXValues = [{% for writer in writerInfo %}'{{writer.full_name}}',{% endfor %} ];
+    var barYValues = [{% for writer in writerInfo %}'{{writer.total}}',{% endfor %} ];
+    var pubName = [{% for publisher in publisherInfo %}'{{publisher.publisher__name}}',{% endfor %} ]
+    var pubTotal = [{% for publisher in publisherInfo %}'{{publisher.total}}',{% endfor %} ]
+    var lineLabel = [{% for book in bookInfo %}'{{book.name}}',{% endfor %} ];
+    var lineTotal = [{% for book in bookInfo %}'{{book.count}}',{% endfor %} ];
+    var lineChart = document.getElementById("bookChart");
+    lineChart.height = 50;
+    var colors = ['rgba(255, 99, 132, 0.7)',
+                      'rgba(255, 159, 64, 0.7)',
+                      'rgba(255, 205, 86, 0.7)',
+                      'rgba(75, 192, 192, 0.7)',
+                      'rgba(54, 162, 235, 0.7)',
+                      'rgba(153, 102, 255, 0.7)',
+                      'rgba(201, 203, 207, 0.7)'];
+
+    var barChart = new Chart("writerChart", {
+      type: "bar",
+      data: {
+        labels: barXValues,
+        datasets: [{
+          label:'Book Number',
+          backgroundColor: colors,
+          data: barYValues
+        }]
+      },
+      options: {
+        legend: {display: false},
+        responsive: true
+      }
+    });
+    var PieChart = new Chart("publisherChart", {
+      type: 'pie',
+      data: {
+        datasets: [{
+          data: pubTotal,
+          backgroundColor: colors,
+          label: 'Writers'
+        }],
+        labels: pubName
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero:true
+            }
+        }]
+        }
+      }
+    });
+    var lineChart = new Chart("bookChart", {
+      type: "line",
+      data: {
+        labels: lineLabel,
+        datasets: [{
+          label:'Stock Count',
+          backgroundColor: colors[0],
+          data: lineTotal
+        }]
+      },
+      options: {
+        legend: {display: false},
+        responsive: true
+      }
+    });
+
+</script>
+{% endblock %}
