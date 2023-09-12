@@ -1,11 +1,10 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 from django.contrib.auth.decorators import login_required, permission_required
 
+from base.generators import paginator
 from .forms import WriterForm
 from .models import Writer
 
@@ -13,18 +12,9 @@ from .models import Writer
 @login_required(login_url="login")
 @permission_required('writer.can_view_writer_list', raise_exception=True)
 def writer_list(request):
-    writers = Writer.objects.active()
     form = WriterForm()
-    paginator = Paginator(writers, 5)
     page = request.GET.get('page', 1)
-
-    try:
-        writers = paginator.page(page)
-    except PageNotAnInteger:
-        writers = paginator.page(1)
-    except EmptyPage:
-        writers = paginator.page(paginator.num_pages)
-
+    writers = paginator(page, Writer)
     content = {
         'writers': writers,
         'form': form
@@ -36,9 +26,10 @@ def writer_list(request):
 @permission_required('writer.can_add_writer', raise_exception=True)
 def add_writer(request):
     try:
+        page = request.GET.get('page', 1)
+        writers = paginator(page, Writer)
         if request.method == 'POST':
             form = WriterForm(request.POST)
-            writers = Writer.objects.active()
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Add Successfuly')
@@ -62,7 +53,8 @@ def add_writer(request):
 def edit_writer(request, id):
     try:
         writer = Writer.objects.get(id=id)
-        writers = Writer.objects.active()
+        page = request.GET.get('page', 1)
+        writers = paginator(page, Writer)
 
         if request.method == 'POST':
             form = WriterForm(request.POST, request.FILES, instance=writer)
@@ -93,7 +85,7 @@ def delete_writer(request, id):
         messages.success(request, 'Writer Deleted')
     except Exception as e:
         messages.warning(request, 'Writer Not Deleted')
-    return redirect('writers')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def publisher_of_writers(request):

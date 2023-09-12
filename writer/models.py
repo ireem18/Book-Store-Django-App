@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from publisher.models import Publisher
 
@@ -17,7 +18,7 @@ categories = (
 class Writer(BaseModel):
     name = models.CharField(max_length=40)
     surname = models.CharField(max_length=40)
-    age = models.IntegerField(null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(18)])
     categories = models.CharField(max_length=100, choices=categories)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, related_name='writers')
 

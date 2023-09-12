@@ -23,13 +23,3 @@ class PublisherForm(forms.ModelForm):
             "name": {"max_length": "This writer's name is too long."},
             "code": {"max_length": "This writer's code is too long."}
         }
-
-    def save(self, commit=True):
-        instance = super(PublisherForm, self).save(commit=False)
-        clean_data = super().clean()
-        instance.name = clean_data.get('name')
-        instance.code = clean_data.get('code')
-        instance.started_date = clean_data.get('started_date')
-        if commit:
-            instance.save()
-        return instance
