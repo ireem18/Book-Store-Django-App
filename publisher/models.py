@@ -12,12 +12,9 @@ class Publisher(BaseModel):
     def __str__(self):
         return self.name
 
-    def deactive(self, obj):
-        super().deactive(obj)
-        books = obj.books.filter(active=True)
-        writers = obj.writers.filter(active=True)
-        for book in books:
-            super().deactive(book)
+    def deactive(self):
+        super().deactive()
+        writers = self.writers.filter(active=True)
         for writer in writers:
-            super().deactive(writer)
+            writer.deactive()
 

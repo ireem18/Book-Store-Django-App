@@ -31,8 +31,8 @@ class Writer(BaseModel):
     def __str__(self):
         return self.name + ' ' + self.surname
 
-    def deactive(self, obj):
-        super().deactive(obj)
-        books = obj.books.filter(active=True)
+    def deactive(self):
+        super().deactive()
+        books = self.books.filter(active=True)
         for book in books:
-            super().deactive(book)
+            book.deactive()

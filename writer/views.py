@@ -81,7 +81,7 @@ def edit_writer(request, id):
 def delete_writer(request, id):
     try:
         writer = Writer.objects.get(id=id)
-        writer.deactive(writer)
+        writer.deactive()
         messages.success(request, 'Writer Deleted')
     except Exception as e:
         messages.warning(request, 'Writer Not Deleted')

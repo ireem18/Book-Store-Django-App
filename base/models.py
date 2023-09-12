@@ -15,6 +15,6 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
-    def deactive(self, obj):
-        obj.active = False
-        obj.save()
+    def deactive(self):
+        self.active = False
+        self.save()

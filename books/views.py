@@ -92,7 +92,7 @@ def delete_book(request, id):
     try:
         book = Book.objects.get(id=id)
         if request.method == 'POST':
-            book.deactive(book)
+            book.deactive()
             messages.success(request, 'Book Deleted')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         else:
