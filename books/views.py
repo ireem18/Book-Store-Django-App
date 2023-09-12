@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from .forms import BookForm, SearchForm
 from .models import Book
 
+
 @login_required(login_url="login")
 @permission_required('books.can_view_book_list', raise_exception=True)
 def book_list(request):
@@ -43,23 +44,29 @@ def book_list(request):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+@login_required(login_url="login")
 def save_book_form(request, form, template_name):
-    data = dict()
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            data['form_is_valid'] = True
-            books = Book.objects.active()
-            data['html_book_list'] = render_to_string('include_book_list.html', {
-                'books': books
-            })
-        else:
-            data['form_is_valid'] = False
-    context = {'form': form, 'formPage': True}
-    data['html_form'] = render_to_string(template_name, context, request=request)
-    return JsonResponse(data)
+    try:
+        data = dict()
+        if request.method == 'POST':
+            if form.is_valid():
+                form.save()
+                data['form_is_valid'] = True
+                books = Book.objects.active()
+                data['html_book_list'] = render_to_string('include_book_list.html', {
+                    'books': books
+                })
+            else:
+                data['form_is_valid'] = False
+        context = {'form': form, 'formPage': True}
+        data['html_form'] = render_to_string(template_name, context, request=request)
+        return JsonResponse(data)
+    except Exception as e:
+        return JsonResponse({"success": False})
 
 
+@login_required(login_url="login")
+@permission_required('books.can_add_book', raise_exception=True)
 def add_book(request):
     if request.method == 'POST':
         form = BookForm(request.POST)
@@ -68,6 +75,8 @@ def add_book(request):
     return save_book_form(request, form, 'book_create.html')
 
 
+@login_required(login_url="login")
+@permission_required('books.can_edit_book', raise_exception=True)
 def edit_book(request, id):
     book = get_object_or_404(Book, pk=id)
     if request.method == 'POST':
