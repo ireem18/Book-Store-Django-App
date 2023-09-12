@@ -1,10 +1,10 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 from django.contrib.auth.decorators import permission_required, login_required
 
+from base.generators import paginator
 from .forms import PublisherForm
 from .models import Publisher
 
@@ -12,17 +12,9 @@ from .models import Publisher
 @login_required(login_url="login")
 @permission_required('publisher.view_publisher', raise_exception=True)
 def publisher_list(request):
-    publishers = Publisher.objects.active()
     form = PublisherForm()
-    paginator = Paginator(publishers, 5)
     page = request.GET.get('page', 1)
-
-    try:
-        publishers = paginator.page(page)
-    except PageNotAnInteger:
-        publishers = paginator.page(1)
-    except EmptyPage:
-        publishers = paginator.page(paginator.num_pages)
+    publishers = paginator(page, Publisher)
 
     content = {
         'publishers': publishers,
@@ -35,13 +27,14 @@ def publisher_list(request):
 @permission_required('publisher.add_publisher', raise_exception=True)
 def add_publisher(request):
     try:
+        page = request.GET.get('page', 1)
+        publishers = paginator(page, Publisher)
         if request.method == 'POST':
-            publishers = Publisher.objects.active()
             form = PublisherForm(request.POST)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Add Successfuly')
-                return redirect('publishers')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             else:
                 return render(request, 'publisher_list.html', {'form': form, 'publishers': publishers})
         else:
@@ -50,7 +43,7 @@ def add_publisher(request):
 
     except Exception as e:
         print("Publisher add error", str(e))
-        return redirect('publishers')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required(login_url="login")
@@ -58,7 +51,9 @@ def add_publisher(request):
 def edit_publisher(request, id):
     try:
         publisher = Publisher.objects.get(id=id)
-        publishers = Publisher.objects.active()
+        print(request.method)
+        page = request.GET.get('page', 1)
+        publishers = paginator(page, Publisher)
 
         if request.method == 'POST':
             form = PublisherForm(request.POST, request.FILES, instance=publisher)
@@ -71,10 +66,11 @@ def edit_publisher(request, id):
 
         else:
             form = PublisherForm(instance=publisher)
+            print("form")
             return render(request, 'publisher_list.html', {'form': form, 'publishers': publishers})
 
     except Publisher.DoesNotExist:
-        return redirect('publishers')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required(login_url="login")
@@ -86,4 +82,4 @@ def delete_publisher(request, id):
         messages.success(request, 'Publisher Deleted')
     except Exception as e:
         messages.error(request, 'Publisher Not Deleted')
-    return redirect('publishers')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
