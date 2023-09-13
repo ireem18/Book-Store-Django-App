@@ -115,3 +115,42 @@ def delete_book(request, id):
             return JsonResponse({'html_form': html_form})
     except Book.DoesNotExist:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required(login_url="login")
+@permission_required('books.can_view_book_list', raise_exception=True)
+def export_book_list(request):
+    import openpyxl
+    import datetime
+    from django.http import HttpResponse
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="book_list.xlsx"'
+
+    workbook = openpyxl.Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Book List'
+
+    # Write header row
+    header = ['Publisher Name', 'Writer Name', 'Name', 'Subject', 'ISBN', 'Count', 'Page Count', 'Publisher Date']
+    for col_num, column_title in enumerate(header, 1):
+        cell = worksheet.cell(row=1, column=col_num)
+        cell.value = column_title
+        cell.font = openpyxl.styles.Font(color='FF0000', bold=True)
+        cell.fill = openpyxl.styles.PatternFill("solid", fgColor="DDDDDD")
+
+    # Write data rows
+    queryset = Book.objects.active().annotate(full_name=Concat("writer__name", Value(" "), "writer__surname", output_field=CharField()))
+    queryset = queryset.values_list('publisher__name', 'full_name', 'name', 'subject', 'isbn', 'count', 'page_count',
+                                    'publisher_date')
+
+    for row_num, row in enumerate(queryset, 1):
+        for col_num, cell_value in enumerate(row, 1):
+            cell = worksheet.cell(row=row_num + 1, column=col_num)
+            if isinstance(cell_value, datetime.datetime):
+                cell_value = cell_value.strftime('%Y-%m-%d')
+            cell.value = cell_value
+            cell.font = openpyxl.styles.Font(bold=True)
+
+    workbook.save(response)
+    return response

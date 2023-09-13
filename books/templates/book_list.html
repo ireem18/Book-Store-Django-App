@@ -29,8 +29,9 @@
                   <th scope="col">Publisher Date</th>
                   <th class="d-flex justify-content-center" scope="col">
                     {% if perms.books.can_add_book %}
-                       <a class="add-book rounded-pill" type="button" name="button" data-form-url="{% url 'add_book' %}">Add</a>
+                       <a class="add-book rounded-pill m-1" type="button" name="button" data-form-url="{% url 'add_book' %}">Add</a>
                     {% endif %}
+                      <a class="rounded-pill m-1" type="button" name="button" href="{% url 'export_book_list' %}"><i class="fas fa-download"></i></a>
                 </th>
               </tr>
             </thead>
